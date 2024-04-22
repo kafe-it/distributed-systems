@@ -1,0 +1,47 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    environment:
+      - CONFIG=dev
+      - BACKEND_URL=0.0.0.0
+      - PORT=8000
+      - HTTP_TYPE=auto
+      - RELOAD_APP=True
+      - DATABASE=todos
+      - USER=user
+      - PASSWORD=password
+      - HOSTNAME=db
+      - DB_PORT=3306
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+    networks:
+      - db-api
+
+  db:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=todos
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+      - MYSQL_HOSTNAME=0.0.0.0
+      - MYSQL_PORT=3306
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - db-api
+
+volumes:
+  mysql_data:
+networks:
+  db-api:
+    driver: bridge

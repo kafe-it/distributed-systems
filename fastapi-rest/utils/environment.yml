@@ -1,0 +1,11 @@
+name: fastapi-env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - fastapi
+  - uvicorn
+  - aiomysql
+  - sqlalchemy
+  - pip:
+      - -r requirements.txt
