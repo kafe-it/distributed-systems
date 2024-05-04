@@ -4,10 +4,21 @@ import uvicorn
 from sqlalchemy.orm import Session
 from database import database
 from database import models
+from fastapi.middleware.cors import CORSMiddleware
+
 
 database.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI()
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def get_db():
@@ -27,7 +38,8 @@ def read_root():
 def get_todos(db: Session = Depends(get_db)):
     try:
         todos = db.query(models.Todos).all()
-        return {"todos": todos}
+        todo_list = [todo.todo for todo in todos]
+        return todo_list
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -39,7 +51,7 @@ def add_todo(todo: str, db: Session = Depends(get_db)):
         db.add(db_todo)
         db.commit()
         db.refresh(db_todo)
-        return {"message": f"Todo {todo} added successfully"}
+        return todo
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -49,7 +61,7 @@ def remove_todo(todo: str, db: Session = Depends(get_db)):
     try:
         db.query(models.Todos).filter(models.Todos.todo == todo).delete()
         db.commit()
-        return {"message": f"Todo {todo} removed successfully"}
+        return f"removed {todo}"
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
