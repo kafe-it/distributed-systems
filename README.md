@@ -16,15 +16,27 @@ This repository contains a simple FAST-API backend application connected to a My
 
         git clone https://github.com/kafe-it/distributed-systems.git
 
-2. Navigate to the project directory:
+**Usage (Only start backend)**
+
+1. Navigate to the project directory:
 
         cd fastapi-rest
 
-**Usage**
-
-1. Start the application by running Docker Compose:
+2. Start the application by running Docker Compose:
 
         docker compose up
+
+The backend server will start on http://localhost:8000.
+
+**Usage (Start backend and frontend)**
+
+1. Navigate to the project directory:
+
+        cd sample/otel-in-action
+
+2. Start the application by running Docker Compose:
+
+        docker compose --file .\docker-compose-fastapi.yaml up -d
 
 The backend server will start on http://localhost:8000.
 
