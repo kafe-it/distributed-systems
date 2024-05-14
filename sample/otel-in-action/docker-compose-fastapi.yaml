@@ -20,6 +20,7 @@ services:
       - todonet
 
   todobackend-fastapi:
+    image: kafeit00/fastapi-rest-app:0.0.1
     build:
       context: ../../fastapi-rest
       dockerfile: dockerfile
