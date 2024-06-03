@@ -89,6 +89,14 @@ Run:
         minikube start
         kubectl apply -f sample/otel-in-action/deployment.yaml
 
-Now you can observe the deployments (mysql and fastapi should be running):
+Forward Port:
+        kubectl port-forward service/todoui-flask 5000:5000
+        kubectl port-forward service/todoui-thymeleaf 8090:8090
+
+Now you can observe the deployments:
 
         kubectl get deployments
+
+See Service Ports and IPs:
+
+        kubectl get services

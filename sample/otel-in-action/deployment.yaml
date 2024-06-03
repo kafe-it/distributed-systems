@@ -107,7 +107,7 @@ spec:
     spec:
       containers:
       - name: todoui-thymeleaf
-        image: todoui:otel
+        image: maeddes/todoui-thymeleaf:v2404
         env:
         - name: BACKEND_URL
           value: "http://todobackend-fastapi:8000/"
@@ -142,7 +142,7 @@ spec:
     spec:
       containers:
       - name: todoui-flask
-        image: todoui-flask
+        image: maeddes/todoui-flask:v2404
         env:
         - name: BACKEND_URL
           value: "http://todobackend-fastapi:8000/todos/"
