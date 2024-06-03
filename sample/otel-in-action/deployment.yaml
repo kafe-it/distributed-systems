@@ -1,0 +1,162 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysqldb
+spec:
+  selector:
+    matchLabels:
+      app: mysqldb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mysqldb
+    spec:
+      containers:
+      - name: mysqldb
+        image: mysql:5.7
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "password"
+        - name: MYSQL_DATABASE
+          value: "todos"
+        - name: MYSQL_USER
+          value: "user"
+        - name: MYSQL_PASSWORD
+          value: "password"
+        ports:
+        - containerPort: 3306
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysqldb
+spec:
+  ports:
+  - port: 3306
+    targetPort: 3306
+  selector:
+    app: mysqldb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todobackend-fastapi
+spec:
+  selector:
+    matchLabels:
+      app: todobackend-fastapi
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: todobackend-fastapi
+    spec:
+      containers:
+      - name: todobackend-fastapi
+        image: kafeit00/fastapi-rest-app:0.0.1
+        env:
+        - name: CONFIG
+          value: "dev"
+        - name: BACKEND_URL
+          value: "0.0.0.0"
+        - name: PORT
+          value: "8000"
+        - name: HTTP_TYPE
+          value: "auto"
+        - name: RELOAD_APP
+          value: "True"
+        - name: DATABASE
+          value: "todos"
+        - name: USER
+          value: "user"
+        - name: PASSWORD
+          value: "password"
+        - name: HOSTNAME
+          value: "mysqldb"
+        - name: DB_PORT
+          value: "3306"
+        ports:
+        - containerPort: 8000
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todobackend-fastapi
+spec:
+  ports:
+  - port: 8000
+    targetPort: 8000
+  selector:
+    app: todobackend-fastapi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todoui-thymeleaf
+spec:
+  selector:
+    matchLabels:
+      app: todoui-thymeleaf
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: todoui-thymeleaf
+    spec:
+      containers:
+      - name: todoui-thymeleaf
+        image: todoui:otel
+        env:
+        - name: BACKEND_URL
+          value: "http://todobackend-fastapi:8000/"
+        ports:
+        - containerPort: 8090
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todoui-thymeleaf
+spec:
+  ports:
+  - port: 8090
+    targetPort: 8090
+  selector:
+    app: todoui-thymeleaf
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todoui-flask
+spec:
+  selector:
+    matchLabels:
+      app: todoui-flask
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: todoui-flask
+    spec:
+      containers:
+      - name: todoui-flask
+        image: todoui-flask
+        env:
+        - name: BACKEND_URL
+          value: "http://todobackend-fastapi:8000/todos/"
+        ports:
+        - containerPort: 5000
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: todoui-flask
+spec:
+  ports:
+  - port: 5000
+    targetPort: 5000
+  selector:
+    app: todoui-flask
