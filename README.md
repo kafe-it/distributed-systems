@@ -89,7 +89,7 @@ Run:
         minikube start
         kubectl apply -f sample/otel-in-action/deployment.yaml
 
-Forward Port:
+Forward Port for Codespaces:
 
         kubectl port-forward service/todoui-flask 5000:5000
         kubectl port-forward service/todoui-thymeleaf 8090:8090
