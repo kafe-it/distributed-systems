@@ -59,7 +59,7 @@ services:
       - OTEL_LOGS_EXPORTER=none
 
   todoui-flask:
-    image: todoui-flask:v0.1
+    image: todoui-flask
     build:
       context: ./todoui-flask
     networks:
